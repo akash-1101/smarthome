@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:knob_widget/src/enums/elements_position.dart';
 import 'package:knob_widget/src/utils/major_tick_style.dart';

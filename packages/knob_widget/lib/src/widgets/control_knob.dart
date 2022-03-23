@@ -3,7 +3,6 @@ import 'package:knob_widget/src/utils/knob_style.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 
-import 'circle_tick_painter.dart';
 
 class ControlKnob extends StatelessWidget {
   final double rotation;
