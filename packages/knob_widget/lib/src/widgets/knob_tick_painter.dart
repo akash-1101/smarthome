@@ -45,7 +45,7 @@ class KnobTickPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final width = size.width;
+    final width = size.width + 20;
     final radius = width / 2;
     final sweepAngle = endAngle - startAngle;
     final range = maximum - minimum;
@@ -91,16 +91,20 @@ class KnobTickPainter extends CustomPainter {
       //
       for (int i = 0; i <= totalTickCount; i++) {
         bool isMajor = i % minorTickCount == 0;
+        bool isMinor = i == totalTickCount.toInt();
         if (isMajor) {
           _textPainter.text = TextSpan(
             text: _getLabel((i * minorTickAngle).toInt()).toStringAsFixed(0) +
                 "\u2103",
-            style: labelStyle,
+            style: const TextStyle(
+                color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 14),
           );
+
           _textPainter.layout(
             minWidth: 0,
             maxWidth: double.maxFinite,
           );
+
           canvas.rotate(-(i * rotationAngle + startAngle * pi / 180 - pi / 2));
           _textPainter.paint(
             canvas,
@@ -111,14 +115,7 @@ class KnobTickPainter extends CustomPainter {
                   labelRadius * (1 - cos(startAngle * pi / 180 - pi / 2)),
             ),
           );
-          canvas.rotate(i * rotationAngle + startAngle * pi / 180 - pi / 2);
         }
-        //
-        canvas.translate(
-          labelRadius * sin(rotationAngle),
-          labelRadius * (1 - cos(rotationAngle)),
-        );
-        canvas.rotate(rotationAngle);
       }
     }
   }

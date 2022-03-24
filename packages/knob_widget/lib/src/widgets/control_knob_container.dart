@@ -46,7 +46,7 @@ class _ControlKnobContainerState extends State<ControlKnobContainer> {
               painter: KnobTickPainter(
                 current: controller.value.current,
                 minimum: controller.value.minimum,
-                maximum: controller.value.maximum,
+                maximum: controller.value.maximum, 
                 startAngle: controller.value.startAngle,
                 endAngle: controller.value.endAngle,
                 tickOffset: style.tickOffset,

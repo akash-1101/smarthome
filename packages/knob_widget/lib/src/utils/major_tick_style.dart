@@ -9,7 +9,7 @@ class MajorTickStyle {
   const MajorTickStyle({
     this.length = 15,
     this.thickness = 1,
-    this.color = Colors.black,
-    this.highlightColor = Colors.grey,
+    this.color = Colors.grey,
+    this.highlightColor = Colors.black,
   });
 }

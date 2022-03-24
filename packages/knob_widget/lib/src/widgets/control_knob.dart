@@ -3,7 +3,6 @@ import 'package:knob_widget/src/utils/knob_style.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 
-
 class ControlKnob extends StatelessWidget {
   final double rotation;
   const ControlKnob(
@@ -32,30 +31,23 @@ class ControlKnob extends StatelessWidget {
                   color: style.controlStyle.glowColor,
                   blurRadius: 1.0,
                   spreadRadius: 1.0,
-                  offset: const Offset(0.0, 1.0),
+                  offset: const Offset(0.0, 2.0),
                 )
               ]),
           child: Align(
             alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.all(style.pointerStyle.offset),
-              child: SizedBox(
-                height: style.pointerStyle.height,
-                width: style.pointerStyle.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
-                    Icon(
-                      Icons.arrow_drop_up_sharp,
-                      size: 40,
-                    ),
-                    Icon(
-                      Icons.circle,
-                      size: 10,
-                    ),
-                  ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                Icon(
+                  Icons.arrow_drop_up_sharp,
+                  size: 40,
                 ),
-              ),
+                Icon(
+                  Icons.circle,
+                  size: 10,
+                ),
+              ],
             ),
           ),
         ),

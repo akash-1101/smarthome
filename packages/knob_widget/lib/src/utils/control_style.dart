@@ -9,8 +9,8 @@ class ControlStyle {
 
   const ControlStyle({
     this.backgroundColor = Colors.white,
-    this.shadowColor = Colors.purpleAccent,
-    this.glowColor = Colors.purpleAccent,
+    this.shadowColor = Colors.white,
+    this.glowColor = Colors.white,
     this.tickStyle = const ControlTickStyle(),
   });
 }

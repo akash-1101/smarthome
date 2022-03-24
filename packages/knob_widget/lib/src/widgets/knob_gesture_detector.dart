@@ -5,6 +5,7 @@ import 'package:knob_widget/src/widgets/control_knob.dart';
 
 import 'package:knob_widget/src/widgets/radial_drag_gesture_detector.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 
 class KnobGestureDetector extends StatefulWidget {
   const KnobGestureDetector({
@@ -49,7 +50,7 @@ class _KnobGestureDetectorState extends State<KnobGestureDetector> {
                 elevation: 10,
                 shape: const CircleBorder(),
                 child: Container(
-                  padding: const EdgeInsets.all(40),
+                  padding: const EdgeInsets.all(60),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
@@ -62,10 +63,20 @@ class _KnobGestureDetectorState extends State<KnobGestureDetector> {
                           offset: Offset(0.0, 1.0),
                         )
                       ]),
-                  child: Text(
-                    controller.value.current.toInt().toString() + "\u2103",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 35),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        controller.value.current.toInt().toString(),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 60),
+                      ),
+                      const Text(
+                        "\u2103",
+                        style: TextStyle(fontSize: 25),
+                      ),
+                    ],
                   ),
                 ))),
       ],

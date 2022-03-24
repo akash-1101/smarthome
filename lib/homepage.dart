@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:knob_widget/knob_widget.dart';
@@ -102,29 +103,21 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.all(30),
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Colors.purple,
-              Colors.blueAccent,
+      body: Container(
+        padding: const EdgeInsets.all(30),
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/background.jpg"), fit: BoxFit.fill)),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              homePageTitle(context),
+              areaTitle(context),
+              roomTempWidget(context),
+              musicWidget(context)
             ],
-          )),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                homePageTitle(context),
-                areaTitle(context),
-                roomTempWidget(context),
-                musicWidget(context)
-              ],
-            ),
           ),
         ),
       ),
@@ -136,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         CardW(
           Container(
-            height: 200,
+            height: 150,
             width: MediaQuery.of(context).size.width * 0.4,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -148,19 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
-                      "Play Music",
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.white,
-                    )
-                  ],
-                ),
                 StreamBuilder<Playing?>(
                     stream: _assetsAudioPlayer.current,
                     builder: (context, playing) {
@@ -168,12 +148,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         final myAudio =
                             find(audios, playing.data!.audio.assetAudioPath);
                         return Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(10.0),
                               child: Neumorphic(
                                 style: const NeumorphicStyle(
-                                  depth: 8,
+                                  depth: 5,
                                   surfaceIntensity: 1,
                                   shape: NeumorphicShape.concave,
                                   boxShape: NeumorphicBoxShape.circle(),
@@ -184,8 +165,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                             ImageType.network
                                         ? Image.network(
                                             myAudio.metas.image!.path,
-                                            height: 50,
-                                            width: 50,
+                                            height: 40,
+                                            width: 40,
                                             fit: BoxFit.contain,
                                           )
                                         : Image.asset(
@@ -196,9 +177,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                           ),
                               ),
                             ),
-                            Text(myAudio.metas.title.toString(),
-                                style: const TextStyle(
-                                    fontSize: 16, color: Colors.white))
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(myAudio.metas.title.toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: Colors.white)),
+                                Text(myAudio.metas.album.toString(),
+                                    style: const TextStyle(
+                                        overflow: TextOverflow.fade,
+                                        fontSize: 12,
+                                        color: Colors.white)),
+                              ],
+                            )
                           ],
                         );
                       }
@@ -207,48 +200,64 @@ class _MyHomePageState extends State<MyHomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CardW(InkWell(
-                      onTap: () {
-                        _assetsAudioPlayer.previous();
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(4.0),
-                        child: Icon(
-                          Icons.arrow_back_ios_rounded,
-                          size: 30,
-                          color: Colors.white,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: InkWell(
+                        onTap: () {
+                          _assetsAudioPlayer.previous();
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Icon(
+                            Icons.arrow_back_ios_rounded,
+                            size: 30,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    )),
+                    ),
                     InkWell(
                       onTap: () async {
                         await _assetsAudioPlayer.playOrPause();
                       },
-                      child: CardW(StreamBuilder<bool>(
-                          stream: _assetsAudioPlayer.isPlaying,
-                          builder: (context, snapshot) {
-                            return Icon(
-                              snapshot.data == true
-                                  ? Icons.pause_circle_rounded
-                                  : Icons.play_arrow_rounded,
-                              size: 40,
-                              color: Colors.white,
-                            );
-                          })),
+                      child: CardW(
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              child: StreamBuilder<bool>(
+                                  stream: _assetsAudioPlayer.isPlaying,
+                                  builder: (context, snapshot) {
+                                    return Icon(
+                                      snapshot.data == true
+                                          ? Icons.pause_rounded
+                                          : Icons.play_arrow_rounded,
+                                      size: 40,
+                                      color: Colors.white,
+                                    );
+                                  }),
+                            ),
+                          ),
+                          color: Colors.white30),
                     ),
-                    CardW(Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: InkWell(
-                        onTap: () async {
-                          await _assetsAudioPlayer.next(keepLoopMode: false);
-                        },
-                        child: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ))
+                    Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: InkWell(
+                            onTap: () async {
+                              await _assetsAudioPlayer.next(
+                                  keepLoopMode: false);
+                            },
+                            child: const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ))
                   ],
                 )
               ],
@@ -257,7 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         CardW(
           Container(
-            height: 200,
+            height: 150,
             width: MediaQuery.of(context).size.width * 0.4,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -278,7 +287,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: const [
                         Text(
                           "Smart Tv",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
                         ),
                         Text(
                           "Sony Tv",
@@ -321,12 +333,8 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 20.0),
-          child: Card(
-            color: Colors.white,
-            elevation: 50,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: Container(
+          child: CardW(
+            Container(
               height: 220,
               width: MediaQuery.of(context).size.width * 0.4,
               padding: const EdgeInsets.all(10),
@@ -343,10 +351,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     "Home Temperature",
                     style: TextStyle(fontSize: 20),
                   ),
-                  Text(
-                    _controller.value.current.toInt().toString() + " \u2103",
-                    style: const TextStyle(
-                        fontSize: 40, fontWeight: FontWeight.bold),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        _controller.value.current.toInt().toString(),
+                        style: const TextStyle(
+                            fontSize: 50, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        " \u2103",
+                        style: const TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      )
+                    ],
                   ),
                   SwitchW(homeTemperature, (value) {
                     setState(() {
@@ -359,17 +377,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
+            color: Colors.white,
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 20.0),
-          child: Card(
-            color: Colors.white24,
-            shadowColor: Colors.white24,
-            elevation: 50,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: Container(
+          child: CardW(
+            Container(
               height: 220,
               width: MediaQuery.of(context).size.width * 0.4,
               padding: const EdgeInsets.all(10),
@@ -387,7 +401,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: const [
                       Text(
                         "Plug Wall",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
                       Icon(
                         Icons.arrow_forward_ios,
@@ -425,7 +442,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Padding areaTitle(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
+      padding: const EdgeInsets.only(top: 40.0),
       child: Text(
         "Living Room",
         style: TextStyle(fontSize: 20, color: Theme.of(context).cardColor),
@@ -437,7 +454,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
       padding: const EdgeInsets.only(top: 10),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
@@ -450,12 +467,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text(
                     "Good Morning",
                     style: TextStyle(
-                        fontSize: 28, color: Colors.white.withOpacity(0.8)),
+                        fontSize: 24, color: Colors.white.withOpacity(0.8)),
                   ),
                   Text(
                     "Akash A",
                     style: TextStyle(
-                        fontSize: 32, color: Theme.of(context).cardColor),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 32,
+                        color: Theme.of(context).cardColor),
                   ),
                 ],
               )),
@@ -500,10 +519,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     borderRadius: BorderRadius.circular(20)),
                 child: Wrap(
                   children: [
-                    const Center(
-                      child: Icon(Icons.arrow_drop_down_sharp,
-                          color: Colors.grey, size: 40),
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -550,6 +565,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             labelStyle: Theme.of(context).textTheme.bodyText1,
                             tickOffset: 5,
                             labelOffset: 10,
+                            showLabels: true,
                             minorTicksPerInterval: 5,
                           ),
                         ),
@@ -560,7 +576,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Column(
-                          children: const [
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
                               "Current temp",
                               style: TextStyle(
@@ -568,17 +586,35 @@ class _MyHomePageState extends State<MyHomePage> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              "25\u2103",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.arrow_drop_up_rounded,
+                                  color: Colors.grey,
+                                  size: 40,
+                                ),
+                                Text(
+                                  "25",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "\u2103",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
                             )
                           ],
                         ),
                         Column(
-                          children: const [
+                          children: [
                             Text(
                               "Current humidity",
                               style: TextStyle(
@@ -586,12 +622,23 @@ class _MyHomePageState extends State<MyHomePage> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Text(
-                              "54 %",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  color: Colors.grey,
+                                  size: 40,
+                                ),
+                                Text(
+                                  "54 %",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
                             )
                           ],
                         )
@@ -604,16 +651,21 @@ class _MyHomePageState extends State<MyHomePage> {
                           Container(
                             padding: const EdgeInsets.all(20),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    const Text(
-                                      "Heating",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: const Text(
+                                        "Heating",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
                                     ),
                                     Icon(
                                       Icons.circle,
@@ -622,33 +674,54 @@ class _MyHomePageState extends State<MyHomePage> {
                                     )
                                   ],
                                 ),
-                                const Text(
-                                  "24\u2103",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "24",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "\u2103",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
                           ),
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.1),
                         ),
                         CardW(
                           Container(
                             padding: const EdgeInsets.all(20),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: const [
-                                    Text(
-                                      "Cooling",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
+                                    Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: Text(
+                                          "Cooling",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
+                                        )),
                                     Icon(
                                       Icons.circle,
                                       color: Colors.blueAccent,
@@ -656,22 +729,40 @@ class _MyHomePageState extends State<MyHomePage> {
                                     )
                                   ],
                                 ),
-                                const Text(
-                                  "18\u2103",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold),
-                                )
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "18",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "\u2103",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ],
+                                    ))
                               ],
                             ),
                           ),
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.1),
                         ),
                         CardW(
                           Container(
                             padding: const EdgeInsets.all(20),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -685,17 +776,34 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                   ],
                                 ),
-                                const Text(
-                                  "20\u2103",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold),
-                                )
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "20",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "\u2103",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ],
+                                    ))
                               ],
                             ),
                           ),
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.1),
                         )
                       ],
                     ),
@@ -704,12 +812,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         CardW(
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            padding: const EdgeInsets.all(20),
+                            width: MediaQuery.of(context).size.width * 0.42,
+                            padding: const EdgeInsets.only(
+                                top: 10, bottom: 10, right: 10, left: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: const [
                                     Text(
                                       "Fan",
@@ -731,16 +841,18 @@ class _MyHomePageState extends State<MyHomePage> {
                               ],
                             ),
                           ),
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.1),
                         ),
                         CardW(
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            padding: const EdgeInsets.all(20),
+                            width: MediaQuery.of(context).size.width * 0.42,
+                            padding: const EdgeInsets.only(
+                                top: 10, bottom: 10, right: 10, left: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -769,7 +881,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ],
                             ),
                           ),
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.1),
                         ),
                       ],
                     ),

@@ -7,9 +7,9 @@ class MinorTickStyle {
   final Color highlightColor;
 
   const MinorTickStyle({
-    this.length = 5,
+    this.length = 8,
     this.thickness = 1,
-    this.color = Colors.black,
-    this.highlightColor = Colors.grey,
+    this.color = Colors.grey,
+    this.highlightColor = Colors.black,
   });
 }
