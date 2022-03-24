@@ -153,11 +153,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Neumorphic(
-                                style: const NeumorphicStyle(
+                                style: NeumorphicStyle(
                                   depth: 5,
                                   surfaceIntensity: 1,
                                   shape: NeumorphicShape.concave,
-                                  boxShape: NeumorphicBoxShape.circle(),
+                                  boxShape: NeumorphicBoxShape.roundRect(
+                                      BorderRadius.circular(10)),
                                 ),
                                 child: myAudio.metas.image?.path == null
                                     ? const SizedBox()
